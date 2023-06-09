@@ -96,8 +96,8 @@ const options = {
 	serialization: "compact",
 	alg: "RS256",
 
-	key: fs.readFileSync("private.key"),
-	cert: fs.readFileSync("certificate.pem"),
+	key: fs.readFileSync("private.key", "ascii"),
+	cert: fs.readFileSync("certificate.pem", "ascii"),
 
 	// ...
 }
