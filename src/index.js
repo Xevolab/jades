@@ -2,7 +2,7 @@
  * Author    : Francesco
  * Created at: 2023-06-02 13:35
  * Edited by : Francesco
- * Edited at : 2023-06-09 16:44
+ * Edited at : 2023-06-09 17:07
  * 
  * Copyright (c) 2023 Xevolab S.R.L.
  */
@@ -62,7 +62,7 @@ const validateProtected = ajv.getSchema("19182-protected-jsonSchema.json");
 const validateUnprotected = ajv.getSchema("19182-unprotected-jsonSchema.json");
 
 import generateKid from "./utils/generateKid.js";
-import { base64url } from "jose";
+// import { base64url } from "jose";
 
 /**
  * [export description]
@@ -354,18 +354,18 @@ export function sign(payload, {
 
 	// Encoding the JOSE headers
 	let JOSEString = new TextEncoder().encode(JSON.stringify(JOSE));
-	JOSEString = base64url.encode(JOSEString);
+	JOSEString = Buffer.from(JOSEString).toString("base64url");
 
 	// Encoding the eventual unsigned headers
 	let unsignedHeadersString;
 	if (Object.keys(unsignedHeaders).length > 0) {
 		unsignedHeadersString = new TextEncoder().encode(JSON.stringify(unsignedHeaders));
-		unsignedHeadersString = base64url.encode(unsignedHeadersString);
+		unsignedHeadersString = Buffer.from(unsignedHeadersString).toString("base64url");
 	}
 
 	// Encoding the payload
 	payload = new TextEncoder().encode(payload)
-	payload = base64url.encode(payload);
+	payload = Buffer.from(payload).toString("base64url");
 
 	// --> Signing the payload
 	let signature = calculateSignature(alg, key, JOSEString + "." + payload).toString("base64url");
