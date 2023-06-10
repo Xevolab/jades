@@ -2,7 +2,7 @@
  * Author    : Francesco
  * Created at: 2023-06-02 13:35
  * Edited by : Francesco
- * Edited at : 2023-06-09 17:07
+ * Edited at : 2023-06-09 18:37
  * 
  * Copyright (c) 2023 Xevolab S.R.L.
  */
@@ -29,9 +29,6 @@ const ajv = new Ajv({
 addFormats(ajv);
 
 import fs from "fs";
-import path from 'path'
-import { fileURLToPath } from 'url';
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 ajv.addSchema({
 	"$id": "19182-jsonSchema.json",

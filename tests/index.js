@@ -2,14 +2,14 @@
  * Author    : Francesco
  * Created at: 2023-06-02 13:45
  * Edited by : Francesco
- * Edited at : 2023-06-09 16:45
+ * Edited at : 2023-06-09 18:36
  * 
  * Copyright (c) 2023 Xevolab S.R.L.
  */
 
-import { sign } from "../src/index.js";
+const { sign } = require("../dist/index.js");
 
-import fs from "fs";
+const fs = require("fs");
 
 (async () => {
 	const payload = {

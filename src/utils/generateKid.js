@@ -2,12 +2,12 @@
  * Author    : Francesco
  * Created at: 2023-06-02 16:25
  * Edited by : Francesco
- * Edited at : 2023-06-09 16:24
+ * Edited at : 2023-06-09 18:39
  * 
  * Copyright (c) 2023 Xevolab S.R.L.
  */
 
-import asn1, { Sequence } from "asn1js";
+import { Sequence, CharacterString, Integer } from "asn1js";
 
 /**
  * Generate a Key ID (kid) from a certificate
@@ -42,11 +42,11 @@ export default function generateKid(cert) {
 	const sequence = new Sequence({
 		value: [
 			// issuer
-			new asn1.CharacterString({
+			new CharacterString({
 				value: cert.issuer
 			}),
 			// serialNumber
-			new asn1.Integer({
+			new Integer({
 				// Passing the serial number as a string is not supported
 				// value: cert.serialNumber,
 				valueHex: new Uint8Array(Buffer.from(cert.serialNumber, "hex"))
