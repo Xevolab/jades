@@ -23,11 +23,11 @@ jobs:
           registry-url: https://npm.pkg.github.com/
       - run: npm ci
         env:
-          GITHUB_PACKAGE_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
       - run: npm run build
       - run: npm publish
         env:
-          GITHUB_PACKAGE_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
   publish-npm:
     runs-on: ubuntu-latest
     permissions:
@@ -40,9 +40,7 @@ jobs:
           node-version: 18
           registry-url: https://registry.npmjs.org/
       - run: npm ci
-        env:
-          GITHUB_PACKAGE_TOKEN: ${{secrets.GITHUB_TOKEN}}
       - run: npm run build
-      - run: npm config set @myco:registry https://registry.npmjs.org
-      - run: npm config set //registry.npmjs.org/:${{secrets.NPM_SECRET}}
       - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{vars.NPM_SECRET}}
