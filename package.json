@@ -1,6 +1,6 @@
 {
 	"name": "@xevolab/jades",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"description": "JAdES Digital Signatures compatible with the ETSI TS 119 182-1 Standard",
 	"keywords": [
 		"JAdES",
@@ -28,7 +28,7 @@
 	],
 	"scripts": {
 		"lint": "eslint src",
-		"build": "rm -rf ./dist && tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json"
+		"build": "rm -rf ./dist && tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json && cp src/schemas ./dist/cjs/schemas -r && cp src/schemas ./dist/esm/schemas -r"
 	},
 	"author": "Xevolab",
 	"license": "MIT",
