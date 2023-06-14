@@ -1,6 +1,6 @@
 {
 	"name": "@xevolab/jades",
-	"version": "0.0.4",
+	"version": "0.1.0",
 	"description": "JAdES Digital Signatures compatible with the ETSI TS 119 182-1 Standard",
 	"keywords": [
 		"JAdES",
