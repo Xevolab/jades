@@ -1,35 +1,41 @@
 {
-  "name": "@xevolab/jades",
-  "version": "0.0.4",
-  "description": "JAdES Digital Signatures compatible with the ETSI TS 119 182-1 Standard",
-  "keywords": [
-    "JAdES",
-    "Digital",
-    "Signatures",
-    "ETSI",
-    "ETSI 119 182-1"
-  ],
-  "main": "./src/index.js",
-  "exports": {
-    ".": "./dist/index.js"
-  },
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "build": "babel ./src -d dist/ --copy-files"
-  },
-  "author": "Xevolab",
-  "license": "MIT",
-  "dependencies": {
-    "ajv": "^8.12.0",
-    "ajv-formats": "^2.1.1",
-    "asn1js": "^3.0.5"
-  },
-  "devDependencies": {
-    "@babel/cli": "^7.22.5",
-    "@babel/core": "^7.22.5",
-    "@babel/node": "^7.22.5",
-    "@babel/preset-env": "^7.22.5"
-  }
+	"name": "@xevolab/jades",
+	"version": "0.0.4",
+	"description": "JAdES Digital Signatures compatible with the ETSI TS 119 182-1 Standard",
+	"keywords": [
+		"JAdES",
+		"Digital",
+		"Signatures",
+		"ETSI",
+		"ETSI 119 182-1"
+	],
+	"main": "./src/index.js",
+	"exports": {
+		".": {
+			"import": "./dist/esm/index.js",
+			"require": "./dist/cjs/index.js",
+			"types": "./dist/types/index.d.ts"
+		},
+		"./schemas/*": "./src/schemas/*"
+	},
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"lint": "eslint src",
+		"build": "rm -rf ./dist && tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json"
+	},
+	"author": "Xevolab",
+	"license": "MIT",
+	"dependencies": {
+		"ajv": "^8.12.0",
+		"ajv-formats": "^2.1.1",
+		"asn1js": "^3.0.5"
+	},
+	"devDependencies": {
+		"@types/node": "^20.3.1",
+		"eslint": "^8.42.0",
+		"eslint-config-airbnb-base": "^15.0.0",
+		"typescript": "^5.1.3"
+	}
 }

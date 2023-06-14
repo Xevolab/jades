@@ -1,0 +1,19 @@
+{
+	"compilerOptions": {
+		"module": "esnext",
+		"outDir": "./dist/types",
+		"moduleResolution": "node",
+		"declaration": true,
+		"emitDeclarationOnly": true
+	},
+	"include": [
+		"src/"
+	],
+	"exclude": [
+		"node_modules",
+		"**/*.spec.ts"
+	],
+	"types": [
+		"node"
+	]
+}
