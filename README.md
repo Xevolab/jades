@@ -128,7 +128,7 @@ const key = createPrivateKey({
 	format: "pem",
 	type: "pkcs1"
 });
-const cert = parseCerts(fs.readFileSync("certificate.pem", "ascii"))[0];
+const certs = parseCerts(fs.readFileSync("certificate.pem", "ascii"));
 
 const options = {
 	serialization: "compact",
@@ -137,7 +137,7 @@ const options = {
 	key,
 
 	protectedHeaders: {
-		x5c: generateX5c(cert)
+		x5c: generateX5c(certs)
 	}
 }
 

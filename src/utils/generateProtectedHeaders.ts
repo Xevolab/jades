@@ -41,6 +41,7 @@ export default function generateProtectedHeaders(
 
 		sigD = null,
 
+		sigT = (new Date().toISOString()).slice(0, -5) + "Z",
 		// These properties are not yet supported by the library but could be
 		// in the future.
 		// Please, consider contributing to the project if you want to help.
@@ -159,12 +160,14 @@ export default function generateProtectedHeaders(
 		"x5t#o": x5tO,
 		sigX5ts,
 
-		// sigT: new Date().toISOString(),
 		sigD,
 		sigPl,
 		sigPId,
 		srCms,
 		srAts,
+
+		// Timestamp related headers
+		sigT,
 		adoTst,
 
 		/**

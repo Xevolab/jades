@@ -12,5 +12,6 @@ export interface ProtectedHeaders {
 	sigPl?: null | object,
 	sigPId?: null | object,
 	sigD?: null | object,
+	sigT?: null | string,
 	adoTst?: null | object[]
 }
