@@ -191,7 +191,7 @@ export default function generateProtectedHeaders(
 	// Checking the JOSE headers against the schema
 	const validationResult = validateProtected(JOSE);
 	if (!validationResult)
-		throw new Error(`Invalid JOSE headers; \n-> ${validateProtected.errors.map((error: Error, i: number) => `${i}. ${error.message}`).join(",\n-> ")}`);
+		throw new Error(`Invalid JOSE headers; \n-> ${validateProtected.errors.map((error: Error, i: number) => `${i}: ${error.message}`).join(",\n-> ")}`);
 
 	return JOSE;
 }

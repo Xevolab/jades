@@ -16,8 +16,8 @@
  *
  */
 
-import { createPrivateKey, X509Certificate, KeyObject } from "crypto";
-import calculateSignature from "./utils/sign";
+import { X509Certificate, KeyObject } from "crypto";
+import calculateSignature, { checkKeyType } from "./utils/sign";
 
 import generateProtectedHeaders from "./utils/generateProtectedHeaders";
 import generateUnprotectedHeaders from "./utils/generateUnprotectedHeaders";
@@ -64,6 +64,8 @@ export default function sign(p: string | object, {
 
 	if (!key || !(key instanceof KeyObject)) throw new Error("Invalid key; needs to be a KeyObject.");
 
+	checkKeyType(alg, key);
+
 	// --> Validating options
 
 	/**
@@ -87,7 +89,7 @@ export default function sign(p: string | object, {
 	 * View also: ETSI TS 119 312
 	 */
 
-	const algs = ["RS256", "RS384", "RS512", /*"ES256", "ES384", "ES512", "PS256", "PS384", "PS512"*/];
+	const algs = ["RS256", "RS384", "RS512", "ES256", "ES384", "ES512", /*"PS256", "PS384", "PS512"*/];
 	if (!algs.includes(alg))
 		throw new Error(`Invalid alg; needs to be one of: ${algs.join(", ")}.\nIt's possibile the algorithm you selected is not yet supported, please consider contributing!`);
 
@@ -136,6 +138,7 @@ export default function sign(p: string | object, {
 	payload = Buffer.from(new TextEncoder().encode(payload)).toString("base64url");
 
 	// --> Signing the payload
+	// const signature = calculateSignature(alg, key, Buffer.from(`${JOSEString}.${payload}`)).toString("base64url");
 	const signature = calculateSignature(alg, key, Buffer.from(`${JOSEString}.${payload}`)).toString("base64url");
 
 	// --> Creating the JWS
