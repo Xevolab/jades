@@ -1,52 +1,51 @@
 {
-   "name": "@xevolab/jades",
-   "version": "0.1.4",
-   "description": "JAdES Digital Signatures compatible with the ETSI TS 119 182-1 Standard",
-   "keywords": [
-      "JAdES",
-      "Digital",
-      "Signatures",
-      "ETSI",
-      "ETSI 119 182-1"
-   ],
-   "repository": {
-      "type": "git",
-      "url": "https://github.com/Xevolab/jades.git"
-   },
-   "main": "./dist/cjs/index.js",
-   "module": "./dist/esm/index.js",
-   "exports": {
-      ".": {
-         "import": "./dist/esm/index.js",
-         "require": "./dist/cjs/index.js",
-         "types": "./dist/types/index.d.ts"
-      },
-      "./schemas/*": "./src/schemas/*"
-   },
-   "files": [
-      "dist"
-   ],
-   "scripts": {
-      "lint": "eslint src",
-      "build": "rm -rf ./dist && tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json && cp -r src/schemas ./dist/cjs/schemas && cp -r src/schemas ./dist/esm/schemas"
-   },
-   "author": "Xevolab",
-   "license": "MIT",
-   "dependencies": {
-      "@types/jwa": "^2.0.1",
-      "ajv": "^8.12.0",
-      "ajv-formats": "^2.1.1",
-      "asn1js": "^3.0.5"
-   },
-   "devDependencies": {
-      "@types/chai": "^4.3.11",
-      "@types/jws": "^3.2.9",
-      "@types/node": "^20.3.1",
-      "chai": "^4.3.8",
-      "eslint": "^8.42.0",
-      "eslint-config-airbnb-base": "^15.0.0",
-      "jose": "^4.14.6",
-      "jws": "^4.0.0",
-      "typescript": "^5.1.3"
-   }
+	"name": "@xevolab/jades",
+	"version": "0.1.4",
+	"description": "JAdES Digital Signatures compatible with the ETSI TS 119 182-1 Standard",
+	"keywords": [
+		"JAdES",
+		"Digital",
+		"Signatures",
+		"ETSI",
+		"ETSI 119 182-1"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Xevolab/jades.git"
+	},
+	"main": "./dist/cjs/index.js",
+	"module": "./dist/esm/index.js",
+	"exports": {
+		".": {
+			"import": "./dist/esm/index.js",
+			"require": "./dist/cjs/index.js",
+			"types": "./dist/types/index.d.ts"
+		},
+		"./schemas/*": "./src/schemas/*"
+	},
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"lint": "eslint src",
+		"build": "rm -rf ./dist && tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json && cp -r src/schemas ./dist/cjs/schemas && cp -r src/schemas ./dist/esm/schemas"
+	},
+	"author": "Xevolab",
+	"license": "MIT",
+	"dependencies": {
+		"ajv": "^8.12.0",
+		"ajv-formats": "^2.1.1",
+		"asn1js": "^3.0.5"
+	},
+	"devDependencies": {
+		"@types/chai": "^4.3.11",
+		"@types/jws": "^3.2.9",
+		"@types/node": "^20.3.1",
+		"chai": "^4.3.8",
+		"eslint": "^8.42.0",
+		"eslint-config-airbnb-base": "^15.0.0",
+		"jose": "^4.14.6",
+		"jws": "^4.0.0",
+		"typescript": "^5.1.3"
+	}
 }
