@@ -3,6 +3,7 @@ name: Publish package to NPM and Github Packages
 on:
   release:
     types: [created]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -38,11 +39,13 @@ jobs:
         with:
           node-version: 20
           registry-url: https://npm.pkg.github.com/
+
       - name: Download build artifacts
         uses: actions/download-artifact@v3
         with:
           name: dist
-      - run: ls -R
+          path: dist
+
       - run: npm publish
     env:
       NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
