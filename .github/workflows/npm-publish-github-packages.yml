@@ -3,7 +3,6 @@ name: Publish package to NPM and Github Packages
 on:
   release:
     types: [created]
-  workflow_dispatch:
 
 jobs:
   build:
@@ -64,10 +63,13 @@ jobs:
         with:
           node-version: 20
           registry-url: https://registry.npmjs.org/
+
       - name: Download build artifacts
         uses: actions/download-artifact@v3
         with:
           name: dist
+          path: dist
+
       - run: npm publish
     env:
       NODE_AUTH_TOKEN: ${{secrets.NPM_SECRET}}
