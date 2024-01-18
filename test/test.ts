@@ -2,7 +2,7 @@
  * Author    : Francesco
  * Created at: 2023-09-24 09:53
  * Edited by : Francesco
- * Edited at : 2023-12-19 15:30
+ * Edited at : 2024-01-18 11:31
  *
  * Copyright (c) 2023 Xevolab S.R.L.
  */
@@ -11,10 +11,10 @@ import { describe, it } from "node:test";
 import { expect } from "chai";
 
 import { createPrivateKey } from "crypto";
-import fs from "fs";
+import * as fs from "fs";
 
 import * as jose from "jose";
-import jws from "jws";
+import * as jws from "jws";
 import sign, { parseCerts, generateX5c, SignAlg } from "../src/index";
 
 import { Algorithm } from "jws";
@@ -22,6 +22,8 @@ import { Algorithm } from "jws";
 const payload = {
 	content: true
 }
+
+console.log(__dirname);
 
 describe("sign", () => {
 
@@ -31,11 +33,11 @@ describe("sign", () => {
 			describe("Key length: " + keyLength, () => {
 
 				const key = createPrivateKey({
-					key: fs.readFileSync(`test_rsa_${keyLength}.pem`, "ascii"),
+					key: fs.readFileSync(__dirname + `/test_rsa_${keyLength}.pem`, "ascii"),
 					format: "pem",
 					type: "pkcs1"
 				});
-				const certs = parseCerts(fs.readFileSync(`test_rsa_${keyLength}.crt`, "ascii"));
+				const certs = parseCerts(fs.readFileSync(__dirname + `/test_rsa_${keyLength}.crt`, "ascii"));
 
 				["RS256", "RS384", "RS512"].forEach(alg => {
 					describe("Alg: " + alg, () => {
@@ -97,11 +99,11 @@ describe("sign", () => {
 				["ES256", "ES384", "ES512"].forEach(alg => {
 
 					const key = createPrivateKey({
-						key: fs.readFileSync("test_elliptic_" + keyLength + ".pem", "ascii"),
+						key: fs.readFileSync(__dirname + "/test_elliptic_" + keyLength + ".pem", "ascii"),
 						format: "pem",
 						type: "pkcs1"
 					});
-					const certs = parseCerts(fs.readFileSync("test_elliptic_" + keyLength + ".crt", "ascii"));
+					const certs = parseCerts(fs.readFileSync(__dirname + "/test_elliptic_" + keyLength + ".crt", "ascii"));
 
 					describe(alg, () => {
 						let options = {
