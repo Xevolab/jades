@@ -2,7 +2,7 @@
  * Author    : Francesco
  * Created at: 2023-09-24 09:53
  * Edited by : Francesco
- * Edited at : 2023-12-01 16:08
+ * Edited at : 2023-12-19 15:30
  *
  * Copyright (c) 2023 Xevolab S.R.L.
  */
@@ -17,9 +17,11 @@ import * as jose from "jose";
 import jws from "jws";
 import sign, { parseCerts, generateX5c, SignAlg } from "../src/index";
 
-const payload = { Bergamot: "for the win" };
-
 import { Algorithm } from "jws";
+
+const payload = {
+	content: true
+}
 
 describe("sign", () => {
 

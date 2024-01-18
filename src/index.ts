@@ -2,7 +2,7 @@
  * Author    : Francesco
  * Created at: 2023-06-02 13:35
  * Edited by : Francesco
- * Edited at : 2023-06-14 14:18
+ * Edited at : 2023-12-04 17:07
  *
  * Copyright (c) 2023 Xevolab S.R.L.
  */
@@ -52,7 +52,7 @@ export default function sign(p: string | object, {
 
 	protectedHeaders?: object,
 	unprotectedHeaders?: object,
-}): string | { payload: string, signature: string, protected: string, header?: string } {
+}): (string | { payload: string, signature: string, protected: string, header?: string }) {
 
 	// --> Validating payload
 
@@ -111,7 +111,7 @@ export default function sign(p: string | object, {
 	if (cty !== null && cty.startsWith("application/")) cty = cty.substring(12);
 	if (detached && cty !== null) throw new Error("Invalid cty; needs to be null when detached is true.");
 
-	const JOSE = generateProtectedHeaders(protectedHeaders, { alg, cty, detached });
+	const protectedH = generateProtectedHeaders(protectedHeaders, { alg, cty, detached });
 	const unsignedHeaders = generateUnprotectedHeaders(unprotectedHeaders);
 
 	/**
@@ -124,8 +124,8 @@ export default function sign(p: string | object, {
 
 	// --> Preparing the signature parts
 
-	// Encoding the JOSE headers
-	let JOSEString = Buffer.from(new TextEncoder().encode(JSON.stringify(JOSE))).toString("base64url");
+	// Encoding the protected headers
+	let protectedHString = Buffer.from(new TextEncoder().encode(JSON.stringify(protectedH))).toString("base64url");
 
 	// Encoding the eventual unsigned headers
 	let unsignedHeadersString = undefined;
@@ -138,20 +138,20 @@ export default function sign(p: string | object, {
 	payload = Buffer.from(new TextEncoder().encode(payload)).toString("base64url");
 
 	// --> Signing the payload
-	// const signature = calculateSignature(alg, key, Buffer.from(`${JOSEString}.${payload}`)).toString("base64url");
-	const signature = calculateSignature(alg, key, Buffer.from(`${JOSEString}.${payload}`)).toString("base64url");
+	// const signature = calculateSignature(alg, key, Buffer.from(`${protectedHString}.${payload}`)).toString("base64url");
+	const signature = calculateSignature(alg, key, Buffer.from(`${protectedHString}.${payload}`)).toString("base64url");
 
 	// --> Creating the JWS
 	if (serialization === "json") {
 		return {
-			protected: JOSEString,
+			protected: protectedHString,
 			header: unsignedHeadersString,
 			payload,
 			signature,
 		};
 	}
 
-	return `${JOSEString}.${payload}.${signature}`;
+	return `${protectedHString}.${payload}.${signature}`;
 }
 
 export { default as generateKid } from "./utils/generateKid";
