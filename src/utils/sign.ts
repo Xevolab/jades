@@ -2,7 +2,7 @@
  * Author    : Francesco
  * Created at: 2023-06-02 20:33
  * Edited by : Francesco
- * Edited at : 2023-06-13 22:11
+ * Edited at : 2024-06-30 15:04
  *
  * Copyright (c) 2023 Xevolab S.R.L.
  */
@@ -120,10 +120,8 @@ export function checkKeyType(alg: SignAlg, key: KeyObject): void {
 }
 
 const calculateSignature = (alg: SignAlg, key: KeyObject, data: Buffer): Buffer => {
-
 	// return jwa(alg).sign(data, key.export({ format: 'pem', type: 'pkcs1' }).toString('ascii'));
 	return sign(digestAlg(alg), data, keyForAlg(alg, key));
-
 };
 
 export default calculateSignature;

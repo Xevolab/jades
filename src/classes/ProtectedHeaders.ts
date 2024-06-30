@@ -1,28 +1,102 @@
 /*
  * Author    : Francesco
- * Created at: 2023-06-13 21:20
+ * Created at: 2024-06-29 21:20
  * Edited by : Francesco
- * Edited at : 2023-06-13 22:21
+ * Edited at : 2024-06-30 15:11
  *
- * Copyright (c) 2023 Xevolab S.R.L.
+ * Copyright (c) 2024 Xevolab S.R.L.
  */
 
 const { validateProtected } = require("../schemas/schemas");
 
-import type { SignAlg } from "../types";
-import type { ProtectedHeaders } from "../types";
+import encodeHeaders from "../utils/encodeHeaders";
 
-interface ExtProtectedHeaders extends ProtectedHeaders {
-	alg: SignAlg,
-	cty: null | string,
-	b64: boolean,
+import type { SignAlg } from "../types";
+
+export type IProtectedHeaders = {
+	kid?: null | string,
+	x5u?: null | string,
+	x5c?: null | string[],
+	x5tS256?: null | string,
+	x5tO?: null | { digAlg: string, digVal: string },
+	sigX5ts?: null | { digAlg: string, digVal: string }[],
+	srCms?: null | { commId: object }[],
+	srAts?: null | object[],
+	sigPl?: null | object,
+	sigPId?: null | object,
+	sigT?: null | string,
+	adoTst?: null | object[]
+};
+
+export interface ExtProtectedHeaders extends IProtectedHeaders {
+	alg?: SignAlg,
+	cty?: null | string,
+	b64?: boolean,
 	"x5t#o"?: null | { digAlg: string, digVal: string },
 	"x5t#S256"?: null | string,
-	crit?: string[]
+	crit?: string[],
+	sigD?: null | object,
 }
 
-export default function generateProtectedHeaders(
+/**
+ * This class is used to manage the protected headers of a token, validating them and returning a
+ * set of methods to interact with them.
+ */
+export default class ProtectedHeaders {
+	private header?: ExtProtectedHeaders;
+
+	constructor(p?: IProtectedHeaders) {
+		// Check the signed headers and assign them to the object
+		if (p && Object.keys(p).length > 0) this.header = validateProtectedHeaders(p);
+	}
+
+	/**
+	 * The addHeaders method is used to add headers to the protected headers.
+	 *
+	 * @param  {object}  p  The headers to add.
+	 *
+	 * @return  {void}
+	 */
+	public addHeaders(p: ExtProtectedHeaders): void {
+		this.header = validateProtectedHeaders({ ...this.header, ...p });
+	}
+
+	/**
+	 * The detach method is used to set the headers for a detached signature.
+	 * This method is used to set the `sigD` header parameter.
+	 */
+	public setDetached(sigD: ExtProtectedHeaders["sigD"]): void {
+		this.header = validateProtectedHeaders({ ...this.header, sigD, cty: undefined });
+	}
+
+	/**
+	 * Get the object of the protected headers.
+	 *
+	 * @return  {Object}  The protected headers.
+	 */
+	public getHeaders(): Object {
+		if (!this.header) throw new Error("Protected headers not set.");
+
+		return this.header;
+	}
+
+	/**
+	 * Get the base64url string encoded version of the protected headers.
+	 *
+	 * @return  {string}  The protected headers in base64url string form.
+	 */
+	public toString(): string {
+		if (!this.header) throw new Error("Protected headers not set.");
+
+		return encodeHeaders(this.header);
+	}
+
+};
+
+function validateProtectedHeaders(
 	{
+		alg = "RS256",
+		cty = null,
 		kid = null,
 
 		x5u = null,
@@ -41,17 +115,12 @@ export default function generateProtectedHeaders(
 
 		sigD = null,
 
-		sigT = (new Date().toISOString()).slice(0, -5) + "Z",
+		sigT = null, // = (new Date().toISOString()).slice(0, -5) + "Z",
 		// These properties are not yet supported by the library but could be
 		// in the future.
 		// Please, consider contributing to the project if you want to help.
 		adoTst = null,
-	}: ProtectedHeaders,
-	{
-		alg,
-		cty,
-		detached
-	}: { alg: SignAlg, cty: null | string, detached: boolean }) {
+	}: ExtProtectedHeaders) {
 
 	/**
 	 * `kid`
@@ -144,8 +213,8 @@ export default function generateProtectedHeaders(
 	 * is only present when the JWS Payload is detached.
 	 * ⚠️ The `sigD` header parameter is not checked by this library.
 	 */
-	if (sigD !== null && typeof sigD !== "object") throw new Error("Invalid sigD; needs to be an object.");
-	if (sigD !== null && !detached) throw new Error("Invalid sigD; needs to be null when detached is false.");
+	// if (sigD !== null && typeof sigD !== "object") throw new Error("Invalid sigD; needs to be an object.");
+	// if (sigD !== null && !detached) throw new Error("Invalid sigD; needs to be null when detached is false.");
 
 	// --> Preparing for the signature
 
@@ -153,6 +222,7 @@ export default function generateProtectedHeaders(
 	const JOSE: ExtProtectedHeaders = {
 		alg,
 		cty,
+
 		kid,
 		x5u,
 		x5c,

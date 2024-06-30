@@ -2,7 +2,7 @@
  * Author    : Francesco
  * Created at: 2023-09-24 09:53
  * Edited by : Francesco
- * Edited at : 2024-01-18 11:31
+ * Edited at : 2024-06-30 16:49
  *
  * Copyright (c) 2023 Xevolab S.R.L.
  */
@@ -15,15 +15,12 @@ import * as fs from "fs";
 
 import * as jose from "jose";
 import * as jws from "jws";
-import sign, { parseCerts, generateX5c, SignAlg } from "../src/index";
+import { Token, ProtectedHeaders, parseCerts, generateX5c } from "../src/index";
+import { SignAlg } from "../src/types";
 
 import { Algorithm } from "jws";
 
-const payload = {
-	content: true
-}
-
-console.log(__dirname);
+const payload = { message: "Hello, world!" };
 
 describe("sign", () => {
 
@@ -41,32 +38,26 @@ describe("sign", () => {
 
 				["RS256", "RS384", "RS512"].forEach(alg => {
 					describe("Alg: " + alg, () => {
-						const options = {
-							serialization: "compact" as const,
-							detached: false,
+						const token = new Token(payload);
 
-							key,
-							alg: alg as SignAlg,
+						token.setProtectedHeaders(new ProtectedHeaders({
+							x5c: generateX5c(certs)
+						}));
 
-							protectedHeaders: {
-								x5c: generateX5c(certs),
-								sigT: null
-							},
-						};
-
-						const token = sign(payload, options) as string;
+						token.sign(alg as SignAlg, key);
+						const jades = token.toString();
 
 						it("should return a string", () => {
-							expect(token).to.be.a("string");
+							expect(jades).to.be.a("string");
 						});
 						it("should be a valid JWS", () => {
-							expect(token.split(".").length).to.equal(3);
+							expect(jades.split(".").length).to.equal(3);
 						});
 						it("should be a valid JWS with a valid header", () => {
-							expect(JSON.parse(Buffer.from(token.split(".")[0], "base64").toString("utf8"))).to.be.an("object");
+							expect(JSON.parse(Buffer.from(jades.split(".")[0], "base64").toString("utf8"))).to.be.an("object");
 						});
 						it("signature lenght should be correct", () => {
-							const sigLengthHex = Buffer.from(token.split(".")[2], "base64").toString("hex").length;
+							const sigLengthHex = Buffer.from(jades.split(".")[2], "base64").toString("hex").length;
 
 							// 2048 bits = 256 bytes = 512 hex chars
 							expect(sigLengthHex).to.equal(parseInt(keyLength) / 4);
@@ -74,14 +65,15 @@ describe("sign", () => {
 
 						// validate with jose
 						it("should be a valid JWS (JOSE)", async () => {
-							const { payload: _payload/*, protectedHeaders */ } = await jose.compactVerify(token, certs[0].publicKey);
+							let { payload: _payload/*, protectedHeaders */ } = await jose.compactVerify(jades, certs[0].publicKey);
+							const returnedString = Buffer.from(_payload).toString("utf8");
 
-							expect(_payload.toString()).to.equal(JSON.stringify(payload));
+							expect(returnedString).to.equal(JSON.stringify(payload));
 						});
 
 						// validate with jws
 						it("should be a valid JWS (JWS)", () => {
-							expect(jws.verify(token, alg as Algorithm, certs[0].publicKey.export({ format: "pem", type: "pkcs1" }).toString("ascii"))).to.equal(true);
+							expect(jws.verify(jades, alg as Algorithm, certs[0].publicKey.export({ format: "pem", type: "pkcs1" }).toString("ascii"))).to.equal(true);
 						});
 					});
 				});
@@ -106,55 +98,50 @@ describe("sign", () => {
 					const certs = parseCerts(fs.readFileSync(__dirname + "/test_elliptic_" + keyLength + ".crt", "ascii"));
 
 					describe(alg, () => {
-						let options = {
-							serialization: "compact" as const,
-							detached: false,
 
-							key,
-							alg: alg as SignAlg,
-
-							protectedHeaders: {
-								x5c: generateX5c(certs),
-								sigT: null
-							},
-						};
+						const token = new Token(payload);
+						token.setProtectedHeaders(new ProtectedHeaders({
+							x5c: generateX5c(certs)
+						}));
 
 						if (alg.slice(2) !== keyLength && !(alg === "ES512" && keyLength === "521")) {
 							it("should throw an error if the key is not valid for the given algorithm", () => {
-								expect(() => sign(payload, options)).to.throw(TypeError);
+								expect(() => token.sign(alg as SignAlg, key)).to.throw(TypeError);
 							});
 
 							return
 						}
 
-						const token = sign(payload, options) as string;
+						token.sign(alg as SignAlg, key);
+						const jades = token.toString();
 
 						it("should return a string", () => {
-							expect(token).to.be.a("string");
+							expect(jades).to.be.a("string");
 						});
 						it("should be a valid JWS", () => {
-							expect(token.split(".").length).to.equal(3);
+							expect(jades.split(".").length).to.equal(3);
 						});
 						it("signature lenght should be correct", () => {
-							expect(Buffer.from(token.split(".")[2], "base64").toString("hex").length).to.equal({
+							expect(Buffer.from(jades.split(".")[2], "base64").toString("hex").length).to.equal({
 								"ES256": 64 * 2,
 								"ES384": 96 * 2,
 								"ES512": 132 * 2
 							}[alg]);
 						});
 						it("should be a valid JWS with a valid header", () => {
-							expect(JSON.parse(Buffer.from(token.split(".")[0], "base64").toString("utf8"))).to.be.an("object");
+							expect(JSON.parse(Buffer.from(jades.split(".")[0], "base64").toString("utf8"))).to.be.an("object");
 						});
 
 						// validate with jose
 						it("should be a valid JWS (JOSE)", async () => {
-							const { payload: _payload/*, protectedHeaders */ } = await jose.compactVerify(token, certs[0].publicKey);
-							expect(_payload.toString()).to.equal(JSON.stringify(payload));
+							const { payload: _payload/*, protectedHeaders */ } = await jose.compactVerify(jades, certs[0].publicKey);
+							const returnedString = Buffer.from(_payload).toString("utf8");
+							expect(returnedString).to.equal(JSON.stringify(payload));
 						});
 
 						// validate with jws
 						it("should be a valid JWS (JWS)", () => {
-							expect(jws.verify(token, alg as Algorithm, certs[0].publicKey.export({ format: "pem", type: "spki" }).toString("ascii"))).to.equal(true);
+							expect(jws.verify(jades, alg as Algorithm, certs[0].publicKey.export({ format: "pem", type: "spki" }).toString("ascii"))).to.equal(true);
 						});
 					});
 				});
