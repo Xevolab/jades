@@ -6,7 +6,8 @@
 		"forceConsistentCasingInFileNames": true,
 		"strict": true,
 		"moduleResolution": "node",
-		"skipLibCheck": true
+		"skipLibCheck": true,
+		"allowJs": true
 	},
 	"include": [
 		"src/"
