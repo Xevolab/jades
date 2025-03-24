@@ -27,7 +27,7 @@ import {Token, ProtectedHeaders, UnprotectedHeaders, parseCerts, generateX5c} fr
 
 # Usage
 
-## `sign(payload, options)`
+## Classes
 
 The library exports 3 classes: `Token`, `ProtectedHeaders`, `UnprotectedHeaders` and some helper functions.
 

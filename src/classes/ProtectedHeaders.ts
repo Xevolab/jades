@@ -2,12 +2,12 @@
  * Author    : Francesco
  * Created at: 2024-06-29 21:20
  * Edited by : Francesco
- * Edited at : 2024-06-30 15:11
+ * Edited at : 2025-03-24 23:05
  *
  * Copyright (c) 2024 Xevolab S.R.L.
  */
 
-const { validateProtected } = require("../schemas/schemas");
+import { validateProtected } from "../schemas/schemas.js";
 
 import encodeHeaders from "../utils/encodeHeaders";
 
