@@ -2,14 +2,14 @@
  * Author    : Francesco
  * Created at: 2024-06-29 21:20
  * Edited by : Francesco
- * Edited at : 2024-06-30 13:31
+ * Edited at : 2025-03-25 23:22
  *
  * Copyright (c) 2024 Xevolab S.R.L.
  */
 
 import encodeHeaders from "../utils/encodeHeaders";
 
-const { validateUnprotected } = require("../schemas/schemas");
+import { validateUnprotected } from "../schemas/schemas.js";
 
 /**
  * This class is used to manage the unprotected headers of a token.
